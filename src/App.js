@@ -3,6 +3,12 @@ import Movies from "./components/movieList";
 import { getMovies } from "./services/fakeMovieService";
 import { getGenres } from "./services/fakeGenreService";
 import React, { Component } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Customers from "./components/customer";
+import Rentals from "./components/rentals";
+import NotFound from "./components/notFound";
+import NavBar from './components/navbar';
+import MovieForm from './components/movieForm';
 
 class App extends Component {
   state = {
@@ -10,7 +16,7 @@ class App extends Component {
     pageSize: 4,
     currentPage: 1,
     genres: [],
-    sortColumn: {path: "", order: ""}
+    sortColumn: {path: "", order: ""},
   };
 
   componentDidMount(){
@@ -41,16 +47,28 @@ class App extends Component {
   handleSort = (path, sortOrder) =>{
     this.setState({sortColumn: {path: path, order: sortOrder}});
   }
-  
+
   render() { 
-    return (<main className="container">
-              <Movies stateObj={this.state} 
-                      onDelete={this.handleDelete}  
-                      onClick={this.handleLiked}
-                      onPageChange={this.handlePageChange}
-                      onListSelect={this.handleListSelect}
-                      onSort={this.handleSort}/>
-            </main>);
+    return (
+            <React.Fragment>
+              <NavBar />
+              <main className="container">
+                <Routes>
+                  <Route path="/movies/:id" element={<MovieForm />}></Route>
+                  <Route path="/movies" element={<Movies stateObj={this.state} 
+                                                              onDelete={this.handleDelete}  
+                                                              onClick={this.handleLiked}
+                                                              onPageChange={this.handlePageChange}
+                                                              onListSelect={this.handleListSelect}
+                                                              onSort={this.handleSort}/>}></Route>
+                  <Route path="/customers" element={<Customers />}></Route>
+                  <Route path="/rentals" element={<Rentals />}></Route>
+                  <Route path="/not-found" element={<NotFound />}></Route>
+                  <Route path="/" element={<Navigate to="/movies"/>}></Route>
+                  <Route path="*" element={<Navigate to="/not-found"/>}></Route>
+                </Routes>
+              </main>
+            </React.Fragment>);
   }
 }
  
